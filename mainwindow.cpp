@@ -46,13 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->pbPathFinding->setEnabled(false);
 
-    ui->progressBar->setVisible(false);
-    ui->label->setVisible(false);
-
     connect(m_scene, &Scene::animated,this, &MainWindow::startAnimatedPath);
     connect(&m_watcher, &QFutureWatcher<pathNodes>::finished,this, [this] { finish(); });
-    //connect(&m_watcher, &QFutureWatcher<pathNodes>::progressRangeChanged,ui->progressBar, &QProgressBar::setRange);
-    //connect(&m_watcher, &QFutureWatcher<pathNodes>::progressValueChanged,ui->progressBar, &QProgressBar::setValue);
     showHint(tr("Введите количество квадратов (поля ввода - \"W\", \"H\")...."));
     readSettings();
 }
@@ -201,6 +196,7 @@ void MainWindow::paintPath(pathNodes &path)
 {
     // Удаляем старый путь
     deletePath();
+    ui->lbResult->setText(QString("%1").arg(path.size()));
 
     // Рисуем путь
     QPen pen(Qt::red, 2);
@@ -345,6 +341,7 @@ void MainWindow::on_pbGenerate_clicked()
     m_scene->clearScene();
     m_view->resetZoom();
     m_currentPath.clear();
+    ui->lbResult->setText("0");
 
     auto textW = ui->leW->text();
     auto textH = ui->leH->text();
